@@ -12,8 +12,19 @@ phases:
       - liquibase --version
   build:
     commands:
-      - echo "Run Liquibase Update"
-      - liquibase --changeLogFile=db-changelog.xml --url=jdbc:database-1.cfmmpxwxxpr5.ap-south-1.rds.amazonaws.com --username=$DB_USERNAME  --password=$DB_PASSWORD 
+      - echo Build started on `date`
+      - liquibase --defaultsFile=liquibase.properties checks run
+      - liquibase --defaultsFile=liquibase.properties validate
+      - liquibase --defaultsFile=liquibase.properties tag codebuild-$CODEBUILD_BUILD_NUMBER
+      - liquibase --defaultsFile=liquibase.properties status --verbose
+      - liquibase --defaultsFile=liquibase.properties updateSql
+      - liquibase --defaultsFile=liquibase.properties update
+      - liquibase --defaultsFile=liquibase.properties history
+      
+  post_build:
+    commands:
+      - liquibase --defaultsFile=liquibase.properties --outputFile=codebuild-$CODEBUILD_BUILD_NUMBER.json snapshot --snapshotFormat=json
+      - echo Build completed on `date`
 artifacts:
   files:
-    - '**/*'  # This will package all files in the build directory as artifacts
+    - codebuild-$CODEBUILD_BUILD_NUMBER.json
