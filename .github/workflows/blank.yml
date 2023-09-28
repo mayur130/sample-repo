@@ -1,0 +1,41 @@
+name: Liquibase Database Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  liquibase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Install Liquibase
+        run: |
+          wget https://github.com/liquibase/liquibase/releases/download/v4.7.1/liquibase-4.7.1.tar.gz
+          tar -xzf liquibase-4.7.1.tar.gz
+          chmod +x liquibase
+          sudo mv liquibase /usr/local/bin/
+          rm liquibase-4.7.1.tar.gz
+        working-directory: ${{ github.workspace }}
+
+      - name: Deploy Database Changes
+        run: |
+          liquibase --changeLogFile=db-changelog/db-changelog.xml \
+                    --url=jdbc:YOUR_DB_URL \
+                    --username=YOUR_DB_USERNAME \
+                    --password=YOUR_DB_PASSWORD \
+                    update
+        env:
+          YOUR_DB_URL: jdbc:mysql://your-database-hostname:3306/your-database-name
+          YOUR_DB_USERNAME: your-database-username
+          YOUR_DB_PASSWORD: your-database-password
+        working-directory: ${{ github.workspace }}
