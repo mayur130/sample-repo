@@ -30,12 +30,10 @@ jobs:
       - name: Deploy Database Changes
         run: |
           liquibase --changeLogFile=db-changelog/db-changelog.xml \
-                    --url=jdbc:YOUR_DB_URL \
-                    --username=YOUR_DB_USERNAME \
-                    --password=YOUR_DB_PASSWORD \
+                    --url=jdbc:${{ secrets.DB_URL }} \
+                    --username=${{ secrets.DB_USERNAME }} \
+                    --password=${{ secrets.DB_PASSWORD }} \
                     update
         env:
-          YOUR_DB_URL: jdbc:mysql://your-database-hostname:3306/your-database-name
-          YOUR_DB_USERNAME: your-database-username
-          YOUR_DB_PASSWORD: your-database-password
+          JAVA_OPTS: '-Dfile.encoding=UTF8'
         working-directory: ${{ github.workspace }}
