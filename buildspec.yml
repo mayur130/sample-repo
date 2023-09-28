@@ -9,6 +9,7 @@ phases:
       - echo "Install Liquibase"
       - curl -L https://github.com/liquibase/liquibase/releases/download/v4.8.0/liquibase-4.8.0.tar.gz -o liquibase.tar.gz
       - tar xzf liquibase.tar.gz
+      - liquibase --version
   build:
     commands:
       - echo "Run Liquibase Update"
