@@ -12,12 +12,7 @@ phases:
   build:
     commands:
       - echo "Run Liquibase Update"
-      - liquibase --changeLogFile=/db-changelog.xml \  # Path to your Liquibase change log file
-                  --url=jdbc:database-1.cfmmpxwxxpr5.ap-south-1.rds.amazonaws.com \  # Your database URL
-                  --username=$DB_USERNAME \  # Use GitHub secrets for security
-                  --password=$DB_PASSWORD \  # Use GitHub secrets for security
-                  update
-
+      - liquibase --changeLogFile=db-changelog.xml --url=jdbc:database-1.cfmmpxwxxpr5.ap-south-1.rds.amazonaws.com --username=$DB_USERNAME  --password=$DB_PASSWORD 
 artifacts:
-  files: 
+  files:
     - '**/*'  # This will package all files in the build directory as artifacts
