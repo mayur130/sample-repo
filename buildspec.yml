@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11  # Replace with your desired Java version
+  pre_build:
+    commands:
+      - echo "Install Liquibase"
+      - curl -L https://github.com/liquibase/liquibase/releases/download/v4.8.0/liquibase-4.8.0.tar.gz -o liquibase.tar.gz
+      - tar xzf liquibase.tar.gz
+  build:
+    commands:
+      - echo "Run Liquibase Update"
+      - liquibase --changeLogFile=/db-changelog.xml \  # Path to your Liquibase change log file
+                  --url=jdbc:database-1.cfmmpxwxxpr5.ap-south-1.rds.amazonaws.com \  # Your database URL
+                  --username=$DB_USERNAME \  # Use GitHub secrets for security
+                  --password=$DB_PASSWORD \  # Use GitHub secrets for security
+                  update
+
+artifacts:
+  files: 
+    - '**/*'  # This will package all files in the build directory as artifacts
